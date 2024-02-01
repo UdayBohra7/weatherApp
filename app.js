@@ -1,13 +1,16 @@
+// function for fetching data from the api.
 function getWeather() {
     const city = document.getElementById('cityInput').value.trim();
     if (city === '') {
         alert('Please enter a city name');
+        document.getElementById('weatherInfo').innerHTML = "";
         return;
     }
-
+    // api key and url link.
     const apiKey = 'ddbcd4f4eaa58fdc6236000e53ff1db3'; 
-    const apiUrl = `https://api.openweathermap.org/data/2.5/weather?appid=${apiKey}&q=${city}&units=metric`;
+    const apiUrl = `https://api.openweathermap.org/data/2.5/weather?appid=${apiKey}&q=${city}&units=metric`; 
 
+    // Fetching data from the api
     fetch(apiUrl)
         .then(response => {
             if (!response.ok) {
@@ -16,13 +19,7 @@ function getWeather() {
             return response.json();
         })
         .then(data => {
-            console.log(data.sys.country)
-            // console.log("Sunrise: ",data.sys.sunrise);
-            if(data.sys.country === "IN"){
-                displayWeather(data);
-            } else if(data.sys.country !== "IN"){
-                document.getElementById('weatherInfo').innerHTML = `<h1 style="color: red;">No City Found in India!</h1>`;
-            }
+            displayWeather(data);
         })
         .catch(error => {
             alert(error.message);
@@ -30,9 +27,11 @@ function getWeather() {
         });
 }
 
+// Displaying data dynamically.
 function displayWeather(data) {
     const weatherInfo = document.getElementById('weatherInfo');
     weatherInfo.innerHTML = `
+        <br>
         <h2>${data.name}, ${data.sys.country}</h2>
         <p>Weather: ${data.weather[0].main}</p>
         <p>Temperature: ${data.main.temp}°C</p>
@@ -40,5 +39,6 @@ function displayWeather(data) {
         <p>Visibility: ${data.visibility} meters</p>
         <p>Sunrise: ${new Date(data.sys.sunrise * 1000).toLocaleTimeString()}</p>
         <p>Sunset: ${new Date(data.sys.sunset * 1000).toLocaleTimeString()}</p>
+        <br>
     `;
 }
